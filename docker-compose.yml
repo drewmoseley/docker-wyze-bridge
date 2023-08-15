@@ -1,0 +1,33 @@
+version: '2.4'
+services:
+  wyze-bridge:
+    container_name: wyze-bridge
+    restart: unless-stopped
+    image: mrlt8/wyze-bridge:latest
+    ports:
+      - 1935:1935 # RTMP
+      - 8554:8554 # RTSP
+      - 8888:8888 # HLS
+      - 8889:8889 #WebRTC
+      - 8189:8189/udp # WebRTC/ICE
+      #- 5000:5000 # WEB-UI
+    env_file: /work/dmoseley/local/wyze-bridge-env.txt
+    environment:
+      - ON_DEMAND=True
+      - SNAPSHOT=API
+      - IGNORE_OFFLINE=true
+      - FPS_FIX=true
+      - ENABLE_BOA=true
+      - QUALITY=HD60
+      #- NET_MODE=P2P
+      - NET_MODE=LAN
+      - MQTT_HOST=mosquitto:1883
+      - MQTT_TOPIC=wyze-bridge
+      - MQTT_DTOPIC=homeassistant
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  default:
+    external: true
+    name: lsio
